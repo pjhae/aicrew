@@ -40,7 +40,8 @@ class ReplayBuffer(object):
             actions.append(action)
             rewards.append(reward[agent_idx])
             obses_tp1.append(np.concatenate(obs_tp1[:]))
-            dones.append(done[agent_idx])
+            # dones.append(done[agent_idx]) # all agent has same DONE
+            dones.append(done)
         return np.array(obses_t), np.array(actions), np.array(rewards), np.array(obses_tp1), np.array(dones)
 
     def make_index(self, batch_size):

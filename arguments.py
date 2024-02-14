@@ -21,7 +21,7 @@ def parse_args():
 
     # core training parameters
     parser.add_argument("--device", default=device, help="torch device ")
-    parser.add_argument("--learning_start_step", type=int, default=50000, help="learning start steps")
+    parser.add_argument("--learning_start_step", type=int, default=10000, help="learning start steps")
     parser.add_argument("--max_grad_norm", type=float, default=0.5, help="max gradient norm for clip")
     parser.add_argument("--learning_fre", type=int, default=100, help="learning frequency")
     parser.add_argument("--tau", type=int, default=0.01, help="how depth we exchange the params of the nn")
