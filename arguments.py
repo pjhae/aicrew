@@ -15,7 +15,7 @@ def parse_args():
     # environment
     parser.add_argument("--scenario_name", type=str, default="simple_tag", help="name of the scenario script")
     parser.add_argument("--start_time", type=str, default=time_now, help="the time when start the game")
-    parser.add_argument("--per_episode_max_len", type=int, default=45, help="maximum episode length")
+    parser.add_argument("--per_episode_max_len", type=int, default=400, help="maximum episode length")
     parser.add_argument("--max_episode", type=int, default=150000, help="maximum episode length")
     parser.add_argument("--num-adversaries", type=int, default=1, help="number of adversaries")
 
@@ -37,9 +37,9 @@ def parse_args():
     # checkpointing
     parser.add_argument("--fre4save_model", type=int, default=400, help="the number of the episode for saving the model")
     parser.add_argument("--start_save_model", type=int, default=400, help="the number of the episode for saving the model")
-    parser.add_argument("--save_dir", type=str, default="models", \
+    parser.add_argument("--save_dir", type=str, default="saved_models", \
             help="directory in which training state and model should be saved")
-    parser.add_argument("--old_model_name", type=str, default="models/simple_tag_2402_141418_1410000/", \
+    parser.add_argument("--old_model_name", type=str, default="saved_models/simple_tag_2402_141418_1410000/", \
             help="directory in which training state and model are loaded")
 
     # evaluation

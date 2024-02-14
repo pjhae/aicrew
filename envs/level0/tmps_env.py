@@ -52,7 +52,7 @@ class env_level0(tmps_env_base):
         print(configs)
 
     def reset(self, **kwargs):
-        print(kwargs)
+        # print(kwargs)
         tmps_env_base.reset(self, **kwargs)
 
     def step(self, actions):

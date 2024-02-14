@@ -16,7 +16,7 @@ from arguments import parse_args
 from replay_buffer import ReplayBuffer
 
 from model import openai_actor, openai_critic
-from envs.level0.tmps_env import env_level0
+from envs.level0.explore_wrapper import explore_wrapper
 
 
 def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, arglist):
@@ -141,16 +141,32 @@ def train(arglist):
     init the env, agent and train the agents
     """
     """step1: create the environment """
-    env = make_env(arglist.scenario_name, arglist, arglist.benchmark)
 
+    env_config = {
+        "num_agents": 4,
+        "obs_box_size": 50,
+        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "dynamic_delta_t": 1.1
+    }
+    # 참고 : 'enemy_init_pos': ((88, 69), (190, 120), (67, 220), (195, 220))
+
+    env = explore_wrapper(env_config)
+
+    # Action space (2-dim, [가속도, 각가속도] )
+    action_space = env.agents[0].action_space
+    action_bound = [np.array([action_space[0].low[0], action_space[1].low[0]]), np.array([action_space[0].high[0], action_space[1].high[0]])] 
+
+    
     print('=============================')
     print('=1 Env {} is right ...'.format(arglist.scenario_name))
     print('=============================')
 
     """step2: create agents"""
-    obs_shape_n = [env.observation_space[i].shape[0] for i in range(env.n)]
-    action_shape_n = [env.action_space[i].n for i in range(env.n)] # no need for stop bit
-    num_adversaries = min(env.n, arglist.num_adversaries)
+
+    obs_shape_n = [12 for _ in range(env.n)] # [global x,y, + [cosyaw,sinyaw] + [rel x,y]*4
+    action_shape_n = [2 for _ in range(env.n)] # [가속도, 각가속도]
+    num_adversaries = None # there is no adversaries in aicrew
+
     actors_cur, critics_cur, actors_tar, critics_tar, optimizers_a, optimizers_c = \
         get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, arglist)
     #memory = Memory(num_adversaries, arglist)
@@ -165,8 +181,6 @@ def train(arglist):
     game_step = 0
     episode_cnt = 0
     update_cnt = 0
-    t_start = time.time()
-    rew_n_old = [0.0 for _ in range(env.n)] # set the init reward
     agent_info = [[[]]] # placeholder for benchmarking info
     episode_rewards = [0.0] # sum of rewards for all agents
     agent_rewards = [[0.0] for _ in range(env.n)] # individual agent reward
@@ -181,18 +195,20 @@ def train(arglist):
         head_o = end_o
         head_a = end_a
 
+    # obs_size [(0, 12), (12, 24), (24, 36), (36, 48)]
+    # action_size [(0, 2), (2, 4), (4, 6), (6, 8)]
+
     print('=3 starting iterations ...')
     print('=============================')
-    obs_n = env.reset()
+
+    reset_arg = {'episode': 0}
 
     for episode_gone in range(arglist.max_episode):
-        # cal the reward print the debug data
-        if game_step > 1 and game_step % 100 == 0:   
-            mean_agents_r = [round(np.mean(agent_rewards[idx][-200:-1]), 2) for idx in range(env.n)]
-            mean_ep_r = round(np.mean(episode_rewards[-200:-1]), 3)
-            print(" "*43 + 'episode reward:{} agents mean reward:{}'.format(mean_ep_r, mean_agents_r), end='\r')
-        print('=Training: steps:{} episode:{}'.format(game_step, episode_gone), end='\r')
-
+        
+        episode_step = 0
+        obs_n = env.reset(**reset_arg)
+        reset_arg['episode'] = episode_gone
+        
         for episode_cnt in range(arglist.per_episode_max_len):
             # get action
             action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
@@ -214,16 +230,12 @@ def train(arglist):
             # update the obs_n
             game_step += 1
             obs_n = new_obs_n
-            done = all(done_n)
+            done = done_n
             terminal = (episode_cnt >= arglist.per_episode_max_len-1)
+
             if done or terminal:
-                episode_step = 0
-                obs_n = env.reset()
-                agent_info.append([[]])
-                episode_rewards.append(0)
-                for a_r in agent_rewards:   
-                    a_r.append(0)
-                continue
+                break
+
 
 if __name__ == '__main__':
     arglist = parse_args()
