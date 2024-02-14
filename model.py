@@ -143,7 +143,12 @@ class openai_actor(abstract_agent):
         x = self.LReLU(self.linear_a1(input))
         x = self.LReLU(self.linear_a2(x))
         model_out = self.linear_a(x)
-        u = torch.rand_like(model_out)
-        policy = F.softmax(model_out - torch.log(-torch.log(u)), dim=-1)
+        policy = torch.tanh(model_out)*self.action_scale + self.action_bias
+
         if model_original_out == True:   return model_out, policy # for model_out criterion
         return policy
+    
+    def to(self, device):
+        self.action_scale = self.action_scale.to(device)
+        self.action_bias = self.action_bias.to(device)
+        return super(openai_actor, self).to(device)

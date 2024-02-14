@@ -111,7 +111,7 @@ def agents_train(arglist, game_step, update_cnt, memory, obs_size, action_size, 
             loss_a = torch.mul(-1, torch.mean(critic_c(obs_n_o, action_cur_o)))
 
             opt_a.zero_grad()
-            (1e-3*loss_pse+loss_a).backward()
+            (1e-2*loss_pse+loss_a).backward()
             nn.utils.clip_grad_norm_(actor_c.parameters(), arglist.max_grad_norm)
             opt_a.step()
 
@@ -145,7 +145,8 @@ def train(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        # "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "init_pos": ((75., 30.), (95., 30.), (25., 95.), (105., 105.)),
         "dynamic_delta_t": 1.1
     }
     # 참고 : 'enemy_init_pos': ((88, 69), (190, 120), (67, 220), (195, 220))
@@ -209,6 +210,9 @@ def train(arglist):
         obs_n = env.reset(**reset_arg)
         reset_arg['episode'] = episode_gone
         
+        if episode_gone%10 == 0:
+            print("episode :", episode_gone)
+
         for episode_cnt in range(arglist.per_episode_max_len):
             # get action
             action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
@@ -216,6 +220,7 @@ def train(arglist):
 
             # interact with env
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
+            # env.render()
 
             # save the experience
             memory.add(obs_n, np.concatenate(action_n), rew_n , new_obs_n, done_n)
