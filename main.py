@@ -19,7 +19,7 @@ from model import openai_actor, openai_critic
 from envs.level0.explore_wrapper import explore_wrapper
 
 
-def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, arglist):
+def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, action_bound, arglist):
     """
     init the trainers or load the old model
     """
@@ -33,9 +33,9 @@ def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, arglist):
 
     # Note: if you need load old model, there should be a procedure for juding if the trainers[idx] is None
     for i in range(env.n):
-        actors_cur[i] = openai_actor(obs_shape_n[i], action_shape_n[i], arglist).to(arglist.device)
+        actors_cur[i] = openai_actor(obs_shape_n[i], action_shape_n[i], action_bound, arglist).to(arglist.device)
         critics_cur[i] = openai_critic(sum(obs_shape_n), sum(action_shape_n), arglist).to(arglist.device)
-        actors_tar[i] = openai_actor(obs_shape_n[i], action_shape_n[i], arglist).to(arglist.device)
+        actors_tar[i] = openai_actor(obs_shape_n[i], action_shape_n[i], action_bound, arglist).to(arglist.device)
         critics_tar[i] = openai_critic(sum(obs_shape_n), sum(action_shape_n), arglist).to(arglist.device)
         optimizers_a[i] = optim.Adam(actors_cur[i].parameters(), arglist.lr_a)
         optimizers_c[i] = optim.Adam(critics_cur[i].parameters(), arglist.lr_c)
@@ -168,7 +168,7 @@ def train(arglist):
     num_adversaries = None # there is no adversaries in aicrew
 
     actors_cur, critics_cur, actors_tar, critics_tar, optimizers_a, optimizers_c = \
-        get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, arglist)
+        get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, action_bound, arglist)
     #memory = Memory(num_adversaries, arglist)
     memory = ReplayBuffer(arglist.memory_size)
     
