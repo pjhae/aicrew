@@ -37,7 +37,7 @@ class explore_wrapper(env_level0):
         # print(self.agents[0].position)
         # Give large bonus if all enemies are detected
         if len(self.agents[0].list_detected_enemy) == self.en:
-            detection_bonus = np.array([10, 10, 10 ,10])
+            detection_bonus = np.array([100, 100, 100 ,100])
             print('All enemies DETECTED!!')
         else:
             detection_bonus = np.array([0, 0, 0 ,0])

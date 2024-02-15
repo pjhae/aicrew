@@ -2,6 +2,12 @@
 .vscode/
 .idea/
 .__pycache__/
+
+
+video/
+saved_models/
+runs/
+
 *.pyc
 *.pt
 *.gif

@@ -14,7 +14,7 @@ device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('
 time_now = time.strftime('%y%m_%d%H%M')
 
 # Tesnorboard
-writer = SummaryWriter('runs/{}_SAC_{}_{}_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), "AI-crew"))
+writer = SummaryWriter('runs/{}_SAC_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), "AI-crew"))
 
 # For video
 video_directory = './video/{}'.format(datetime.datetime.now().strftime("%H:%M:%S %p"))
@@ -49,7 +49,7 @@ def parse_args():
     parser.add_argument("--num_units_openai", type=int, default=64, help="number of units in the mlp")
 
     # checkpointing
-    parser.add_argument("--fre4save_model", type=int, default=400, help="the number of the episode for saving the model")
+    parser.add_argument("--fre4save_model", type=int, default=100, help="the number of the episode for saving the model")
     parser.add_argument("--start_save_model", type=int, default=400, help="the number of the episode for saving the model")
     parser.add_argument("--save_dir", type=str, default="saved_models", \
             help="directory in which training state and model should be saved")

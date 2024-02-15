@@ -232,7 +232,7 @@ def train(arglist):
             # save the experience
             memory.add(obs_n, np.concatenate(action_n), rew_n , new_obs_n, done_n)
             episode_reward += np.sum(rew_n)
-            for i, rew in enumerate(rew_n): agent_rewards[i][-1] += rew
+            for i, rew in enumerate(rew_n): agent_rewards[i] += rew
 
             # train our agents 
             update_cnt, actors_cur, actors_tar, critics_cur, critics_tar = agents_train(\
@@ -249,47 +249,47 @@ def train(arglist):
                 break
 
 
-    # Evaluation
-    if episode_idx % 20 == 0 :
-        arglist.video.init(enabled=True)
-        episode_reward = 0
-        agent_rewards = [0 for _ in range(env.n)] 
+        # Evaluation
+        if episode_idx % 20 == 0 :
+            # arglist.video.init(enabled=True)
+            episode_reward = 0
+            agent_rewards = [0 for _ in range(env.n)] 
 
-        for _ in range(arglist.num_epi_eval):
-            obs_n = env.reset(**reset_arg)
+            for _ in range(arglist.num_epi_eval):
+                obs_n = env.reset(**reset_arg)
 
-            for episode_steps in range(arglist.per_episode_max_len):
-                # get action
-                action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
-                    for agent, obs in zip(actors_cur, obs_n)]
+                for episode_steps in range(arglist.per_episode_max_len):
+                    # get action
+                    action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
+                        for agent, obs in zip(actors_cur, obs_n)]
 
-                # interact with env
-                new_obs_n, rew_n, done_n, info_n = env.step(action_n)
+                    # interact with env
+                    new_obs_n, rew_n, done_n, info_n = env.step(action_n)
 
-                # rendering
-                # env.render()
-                arglist.video.record(env.render(mode='rgb_array'))
+                    # rendering
+                    # env.render()
+                    # arglist.video.record(env.render(mode='rgb_array'))
 
-                # save the experience
-                episode_reward += np.sum(rew_n)
-                for i, rew in enumerate(rew_n): agent_rewards[i][-1] += rew
+                    # save the experience
+                    episode_reward += np.sum(rew_n)
+                    for i, rew in enumerate(rew_n): agent_rewards[i] += rew
 
-                # update the obs_n
-                obs_n = new_obs_n
-                done = done_n
-                terminal = (episode_steps >= arglist.per_episode_max_len-1)
+                    # update the obs_n
+                    obs_n = new_obs_n
+                    done = done_n
+                    terminal = (episode_steps >= arglist.per_episode_max_len-1)
 
-                if done or terminal:
-                    break
-        
-        # add tensorboard
-        arglist.writer.add_scalar('evaluation/reward', episode_reward/arglist.num_epi_eval, episode_idx)
+                    if done or terminal:
+                        break
+            
+            # add tensorboard
+            arglist.writer.add_scalar('evaluation/reward', episode_reward/arglist.num_epi_eval, episode_idx)
 
-        # print
-        print("episode : {}, reward : {}".format(episode_idx, episode_reward/arglist.num_epi_eval))
+            # print
+            print("episode : {}, reward : {}".format(episode_idx, episode_reward/arglist.num_epi_eval))
 
-        arglist.video.save('test_{}.mp4'.format(episode_idx))
-        arglist.video.init(enabled=False)
+            # arglist.video.save('test_{}.mp4'.format(episode_idx))
+            # arglist.video.init(enabled=False)
 
 if __name__ == '__main__':
 
