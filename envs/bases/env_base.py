@@ -437,42 +437,55 @@ class tmps_env_base(gym.Env):
 
         self.test_num += 2
 
-        image = pygame.surfarray.make_surface(self.render_data)
-        self.screen.blit(image, (0, 0))
-        self.screen.blit(self.text_surface, (800, 30))
-        for k in range(len(self.agents)):
-            agent = self.agents[k]
-            # agent 진행방향 표시
-            pygame.draw.line(self.screen, (0, 255, 0), (agent.position[0], agent.position[1]), \
-                             (agent.position[0]-math.sin(agent.current_orientation)*20, \
-                              agent.position[1]+math.cos(agent.current_orientation)*20), 3)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0),
-            #                  (self.width + k * (agent.obs_box_size + 20) + agent.obs_box_size, 0),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), agent.obs_box_size),
-            #                  (self.width + k * (agent.obs_box_size + 20) + agent.obs_box_size, agent.obs_box_size),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0),
-            #                  (self.width + k * (agent.obs_box_size + 20) , agent.obs_box_size),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20)+ agent.obs_box_size, 0),
-            #                  (self.width + k * (agent.obs_box_size + 20)+ agent.obs_box_size , agent.obs_box_size),2)
-            # 전장탐색 obs창 테두리
-            pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0,
-                             agent.obs_box_size, agent.obs_box_size), 2)
+        if mode == "human":
 
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40),
-            #                  (self.width + k * (agent.view_range[0]*2 + 20) + agent.view_range[0]*2, agent.obs_box_size + 40),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40 + agent.view_range[0]*2),
-            #                  (self.width + k * (agent.view_range[0]*2 + 20) + agent.view_range[0]*2, agent.obs_box_size + 40 + agent.view_range[0]*2),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40),
-            #                  (self.width + k * (agent.view_range[0]*2 + 20) , agent.obs_box_size + 40 + agent.view_range[0]*2),2)
-            # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20)+ agent.view_range[0]*2, agent.obs_box_size + 40),
-            #                  (self.width + k * (agent.view_range[0]*2 + 20)+ agent.view_range[0]*2 , agent.obs_box_size + 40 + agent.view_range[0]*2),2)
+            image = pygame.surfarray.make_surface(self.render_data)
+            self.screen.blit(image, (0, 0))
+            self.screen.blit(self.text_surface, (800, 30))
+            for k in range(len(self.agents)):
+                agent = self.agents[k]
+                # agent 진행방향 표시
+                pygame.draw.line(self.screen, (0, 255, 0), (agent.position[0], agent.position[1]), \
+                                (agent.position[0]-math.sin(agent.current_orientation)*20, \
+                                agent.position[1]+math.cos(agent.current_orientation)*20), 3)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0),
+                #                  (self.width + k * (agent.obs_box_size + 20) + agent.obs_box_size, 0),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), agent.obs_box_size),
+                #                  (self.width + k * (agent.obs_box_size + 20) + agent.obs_box_size, agent.obs_box_size),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0),
+                #                  (self.width + k * (agent.obs_box_size + 20) , agent.obs_box_size),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20)+ agent.obs_box_size, 0),
+                #                  (self.width + k * (agent.obs_box_size + 20)+ agent.obs_box_size , agent.obs_box_size),2)
+                # 전장탐색 obs창 테두리
+                pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.obs_box_size + 20), 0,
+                                agent.obs_box_size, agent.obs_box_size), 2)
 
-            # 교전 obs창 테두리 - LOS
-            pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40,
-                             agent.view_range[0]*2, agent.view_range[0]*2), 2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40),
+                #                  (self.width + k * (agent.view_range[0]*2 + 20) + agent.view_range[0]*2, agent.obs_box_size + 40),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40 + agent.view_range[0]*2),
+                #                  (self.width + k * (agent.view_range[0]*2 + 20) + agent.view_range[0]*2, agent.obs_box_size + 40 + agent.view_range[0]*2),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40),
+                #                  (self.width + k * (agent.view_range[0]*2 + 20) , agent.obs_box_size + 40 + agent.view_range[0]*2),2)
+                # pygame.draw.line(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20)+ agent.view_range[0]*2, agent.obs_box_size + 40),
+                #                  (self.width + k * (agent.view_range[0]*2 + 20)+ agent.view_range[0]*2 , agent.obs_box_size + 40 + agent.view_range[0]*2),2)
 
-            # 교전 obs창 테두리 - 지형지물 x LOS
-            pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40 + agent.view_range[0]*2 + 40,
-                             agent.view_range[0]*2, agent.view_range[0]*2), 2)
+                # 교전 obs창 테두리 - LOS
+                pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40,
+                                agent.view_range[0]*2, agent.view_range[0]*2), 2)
 
-        pygame.display.update()
+                # 교전 obs창 테두리 - 지형지물 x LOS
+                pygame.draw.rect(self.screen, (255, 255, 255), (self.width + k * (agent.view_range[0]*2 + 20), agent.obs_box_size + 40 + agent.view_range[0]*2 + 40,
+                                agent.view_range[0]*2, agent.view_range[0]*2), 2)
+
+            pygame.display.update()
+
+        if mode == "rgb_array":
+            image = pygame.surfarray.make_surface(self.render_data)
+            rgb_array = pygame.surfarray.array3d(image)
+
+            # 이미지를 시계방향으로 -90도 돌립니다.
+            rotated_image = np.rot90(rgb_array, k=3)
+
+            # 이미지를 좌우대칭 시킵니다.
+            flipped_image = np.fliplr(rotated_image)
+            return flipped_image # (600, 300, 3)

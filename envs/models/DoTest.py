@@ -41,7 +41,7 @@ if __name__ == '__main__':
         while not done and steps < 1000000:
             steps += 1
             # print(steps)
-            env.render()  # OPTIONAL: render the whole scene + birds eye view
+            env.render(mode = "human")  # OPTIONAL: render the whole scene + birds eye view
 
             _act = env.action_space.sample()
             # print('action_space_sample ', _act)
