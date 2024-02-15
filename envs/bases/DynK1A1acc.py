@@ -40,6 +40,7 @@ class DynK1A1acc:
         self.X += X_dot * self.dt  # <-- ValueError: non-broadcastable output operand with shape (4,) doesn't match the broadcast shape (4,4)
         vx = self.X[0]
         yaw_rate = self.X[1]
+
         ax = self.X[2]
         alpha = self.X[3]
         self.x += vx * np.cos(np.radians(self.yaw)) * self.dt

@@ -51,6 +51,7 @@ class explore_wrapper(env_level0):
         # negative L2 distance
         l2_norms_neg = -np.linalg.norm(rel_pos_assigned, axis=1)
 
+        # toal reward
         agent_reward = detection_bonus + 0.01*l2_norms_neg
 
         return agent_reward

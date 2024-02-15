@@ -8,8 +8,10 @@ from arguments import parse_args
 
 def get_trainers(env, arglist):
 
+    model_epi_number = 60000
+
     """ load the model """
-    actors_tar = [torch.load(arglist.old_model_name+'a_c_{}.pt'.format(agent_idx), map_location=arglist.device) \
+    actors_tar = [torch.load(arglist.old_model_name+'aicrew_{}/'.format(model_epi_number)+'a_c_{}.pt'.format(agent_idx), map_location=arglist.device) \
         for agent_idx in range(env.n)]
 
     return actors_tar
@@ -22,7 +24,7 @@ def test(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
         # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }
@@ -66,5 +68,6 @@ def test(arglist):
         env.render()
 
 if __name__ == '__main__':
+
     arglist = parse_args()
     test(arglist)

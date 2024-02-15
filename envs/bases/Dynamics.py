@@ -622,6 +622,13 @@ class Dynamics:
         self.y = self.y + Vy * self.dt
         self.yaw = self.yaw + self.yawrate * self.dt
         
+        ##################### pjhae #####################
+        self.yawrate = np.clip(self.yawrate, -0.1, 0.1)
+        # print(self.yawrate)
+        # print("#")
+        #################################################
+
+
         # lateral movement
         vyx = self.By[0] * self.vy
         vyy = self.By[1] * self.vy

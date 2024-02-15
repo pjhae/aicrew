@@ -151,7 +151,7 @@ def train(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
         # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }
@@ -170,7 +170,7 @@ def train(arglist):
 
     """step2: create agents"""
 
-    obs_shape_n = [12 for _ in range(env.n)] # [global x,y, + [cosyaw,sinyaw] + [rel x,y]*4
+    obs_shape_n = [12 for _ in range(env.n)] # [global x,y] + [cosyaw,sinyaw] + [rel x,y]*4
     action_shape_n = [2 for _ in range(env.n)] # [가속도, 각가속도]
     num_adversaries = None # there is no adversaries in aicrew
 
@@ -190,7 +190,7 @@ def train(arglist):
     update_cnt = 0
     
 
-    # Calculate observation size for MA
+    # Calculate observation size for MARL
     head_o, head_a, end_o, end_a = 0, 0, 0, 0
     for obs_shape, action_shape in zip(obs_shape_n, action_shape_n):
         end_o = end_o + obs_shape
@@ -210,6 +210,7 @@ def train(arglist):
 
     reset_arg = {'episode': 0}
 
+    # Training
     for _ in range(arglist.max_episode):
         
         episode_idx += 1

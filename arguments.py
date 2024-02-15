@@ -14,7 +14,7 @@ device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('
 time_now = time.strftime('%y%m_%d%H%M')
 
 # Tesnorboard
-writer = SummaryWriter('runs/{}_SAC_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), "AI-crew"))
+writer = SummaryWriter('runs/{}_MADDPG_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), "AI-crew"))
 
 # For video
 video_directory = './video/{}'.format(datetime.datetime.now().strftime("%H:%M:%S %p"))
@@ -53,11 +53,11 @@ def parse_args():
     parser.add_argument("--start_save_model", type=int, default=400, help="the number of the episode for saving the model")
     parser.add_argument("--save_dir", type=str, default="saved_models", \
             help="directory in which training state and model should be saved")
-    parser.add_argument("--old_model_name", type=str, default="saved_models/simple_tag_2402_151243_2490000/", \
+    parser.add_argument("--old_model_name", type=str, default="saved_models/", \
             help="directory in which training state and model are loaded")
 
     # evaluation
-    parser.add_argument("--num_epi_eval", type=int, default=5, help="number of episode")
+    parser.add_argument("--num_epi_eval", type=int, default=1, help="number of episode")
 
     
     return parser.parse_args()
