@@ -145,8 +145,8 @@ def train(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        # "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
-        "init_pos": ((75., 30.), (95., 30.), (25., 95.), (105., 105.)),
+        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }
     # 참고 : 'enemy_init_pos': ((88, 69), (190, 120), (67, 220), (195, 220))
@@ -220,7 +220,7 @@ def train(arglist):
 
             # interact with env
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
-            # env.render()
+            env.render()
 
             # save the experience
             memory.add(obs_n, np.concatenate(action_n), rew_n , new_obs_n, done_n)

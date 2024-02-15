@@ -20,13 +20,13 @@ class explore_wrapper(env_level0):
         return self.get_observation()
         
     def step(self, actions): # assumes 'actions' is 4(agent) X 2(accel,alpha) matrix
-        
+
         action_tuple = [] # 결과를 저장할 리스트 초기화
 
         # 행렬의 각 행을 순회하며 요구된 형식으로 변환
         for row in actions:
             # 각 행의 요소를 결과 형식에 맞게 변환하여 추가
-            action_tuple.append((np.array([row[0]]), np.array([row[1]]), 0, 7, 1))
+            action_tuple.append((np.array([row[0]]), np.array([row[1]]), 0, 7, 0))
 
         _, _, agent_done, agent_info = env_level0.step(self, action_tuple)
 
@@ -36,9 +36,10 @@ class explore_wrapper(env_level0):
         return agent_obs, agent_reward, agent_done, agent_info
     
     def compute_reward(self, obs):
-
+        # print(len(self.agents[0].list_detected_enemy))
+        # print(self.agents[0].position)
         # Give large bonus if all enemies are detected
-        if self.agents[0].list_detected_enemy == self.en:
+        if len(self.agents[0].list_detected_enemy) == self.en:
             detection_bonus = np.array([10, 10, 10 ,10])
             print('All enemies DETECTED!!')
         else:
