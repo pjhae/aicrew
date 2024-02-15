@@ -62,7 +62,7 @@ class openai_actor(abstract_agent):
         nn.init.xavier_uniform_(self.linear_a2.weight, gain=nn.init.calculate_gain('leaky_relu'))
         nn.init.xavier_uniform_(self.linear_a.weight, gain=nn.init.calculate_gain('leaky_relu'))
     
-    def forward(self, input, model_original_out=False):
+    def forward(self, input, model_original_out=False, eval=False):
         """
         The forward func defines how the data flows through the graph(layers)
         flag: 0 sigle input 1 batch input
@@ -71,6 +71,11 @@ class openai_actor(abstract_agent):
         x = self.LReLU(self.linear_a2(x))
         model_out = self.linear_a(x)
         policy = torch.tanh(model_out)*self.action_scale + self.action_bias
+
+        # add gaussian noise if 'NOT' evaluation mode!
+        policy_noise = self.action_scale * torch.randn_like(policy, dtype=torch.float32)/100
+        if eval == False:
+            policy += policy_noise
 
         if model_original_out == True:   return model_out, policy # for model_out criterion
         return policy

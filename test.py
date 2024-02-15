@@ -24,8 +24,8 @@ def test(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
-        # "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
+        # "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
         # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }
@@ -49,7 +49,7 @@ def test(arglist):
         episode_step += 1
 
         # get action
-        action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
+        action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float), eval=True).detach().cpu().numpy() \
             for agent, obs in zip(actors, obs_n)]
 
         # interact with env

@@ -83,14 +83,14 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
             # sample the experience
             _obs_n_o, _action_n, _rew_n, _obs_n_n, _done_n = memory.sample( \
                 arglist.batch_size, agent_idx) # Note_The func is not the same as others
-                
+
             # --use the date to update the CRITIC
             rew = torch.tensor(_rew_n, device=arglist.device, dtype=torch.float) # set the rew to gpu
             done_n = torch.tensor(~_done_n, dtype=torch.float, device=arglist.device) # set the rew to gpu
             action_cur_o = torch.from_numpy(_action_n).to(arglist.device, torch.float)
             obs_n_o = torch.from_numpy(_obs_n_o).to(arglist.device, torch.float)
             obs_n_n = torch.from_numpy(_obs_n_n).to(arglist.device, torch.float)
-            action_tar = torch.cat([a_t(obs_n_n[:, obs_size[idx][0]:obs_size[idx][1]]).detach() \
+            action_tar = torch.cat([a_t(obs_n_n[:, obs_size[idx][0]:obs_size[idx][1]], eval=True).detach() \
                 for idx, a_t in enumerate(actors_tar)], dim=1)
             q = critic_c(obs_n_o, action_cur_o).reshape(-1) # q 
             q_ = critic_t(obs_n_n, action_tar).reshape(-1) # q_ 
@@ -104,7 +104,7 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
 
             # --use the data to update the ACTOR
             model_out, policy_c_new = actor_c( \
-                obs_n_o[:, obs_size[agent_idx][0]:obs_size[agent_idx][1]], model_original_out=True) # There is no need to cal other agent's action
+                obs_n_o[:, obs_size[agent_idx][0]:obs_size[agent_idx][1]], model_original_out=True, eval=True) # There is no need to cal other agent's action
             # update the aciton of this agent
             action_cur_o[:, action_size[agent_idx][0]:action_size[agent_idx][1]] = policy_c_new 
             # loss_pse = torch.mean(torch.pow(model_out, 2))
@@ -152,7 +152,8 @@ def train(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
+        # "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
         # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }
@@ -262,7 +263,7 @@ def train(arglist):
 
                 for episode_steps in range(arglist.per_episode_max_len):
                     # get action
-                    action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
+                    action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float), eval=True).detach().cpu().numpy() \
                         for agent, obs in zip(actors_cur, obs_n)]
 
                     # interact with env
