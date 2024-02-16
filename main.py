@@ -164,7 +164,6 @@ def train(arglist):
     # Action space (2-dim, [가속도, 각가속도] )
     action_space = env.agents[0].action_space
     action_bound = [np.array([action_space[0].low[0], action_space[1].low[0]]), np.array([action_space[0].high[0], action_space[1].high[0]])] 
-
     
     print('=============================')
     print('=1 Env {} is right ...'.format(arglist.scenario_name))
@@ -216,7 +215,6 @@ def train(arglist):
     for _ in range(arglist.max_episode):
         
         episode_idx += 1
-
         episode_reward = 0
         agent_rewards = [0 for _ in range(env.n)] 
 
@@ -224,13 +222,18 @@ def train(arglist):
         reset_arg['episode'] = episode_idx
         
         for episode_steps in range(arglist.per_episode_max_len):
+
             # get action
-            action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
-                for agent, obs in zip(actors_cur, obs_n)]
+            if arglist.learning_start_step > total_step:
+                action_n = np.random.uniform(action_bound[0], action_bound[1], (env.n, 2))
+            else:
+                action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float)).detach().cpu().numpy() \
+                    for agent, obs in zip(actors_cur, obs_n)]
+
 
             # interact with env
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
-            # env.render()
+            env.render()
 
             # save the experience
             memory.add(obs_n, np.concatenate(action_n), rew_n , new_obs_n, done_n)
@@ -270,7 +273,7 @@ def train(arglist):
                     new_obs_n, rew_n, done_n, info_n = env.step(action_n)
 
                     # rendering
-                    # env.render()
+                    env.render()
                     # arglist.video.record(env.render(mode='rgb_array'))
 
                     # save the experience
