@@ -8,7 +8,7 @@ from arguments import parse_args
 
 def get_trainers(env, arglist):
 
-    model_epi_number = 460000
+    model_epi_number = 69900
 
     """ load the model """
     actors_tar = [torch.load(arglist.old_model_name+'aicrew_{}/'.format(model_epi_number)+'a_c_{}.pt'.format(agent_idx), map_location=arglist.device) \
