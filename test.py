@@ -8,7 +8,7 @@ from arguments import parse_args
 
 def get_trainers(env, arglist):
 
-    model_epi_number = 69900
+    model_epi_number = 2749900
 
     """ load the model """
     actors_tar = [torch.load(arglist.old_model_name+'aicrew_{}/'.format(model_epi_number)+'a_c_{}.pt'.format(agent_idx), map_location=arglist.device) \
@@ -49,7 +49,7 @@ def test(arglist):
         episode_step += 1
 
         # get action
-        action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float), eval=True).detach().cpu().numpy() \
+        action_n = [agent(torch.from_numpy(obs).to(arglist.device, torch.float), eval=False).detach().cpu().numpy() \
             for agent, obs in zip(actors, obs_n)]
 
         # interact with env
