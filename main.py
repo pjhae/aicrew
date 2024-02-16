@@ -5,14 +5,13 @@
 import os
 import time
 import torch
-import pickle
-import argparse
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 
 from arguments import parse_args
 
+from utils.logger import logger
 from utils.replay_buffer import ReplayBuffer
 from utils.model import openai_actor, openai_critic
 
@@ -126,9 +125,9 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
         if update_cnt > arglist.start_save_model and update_cnt % arglist.fre4save_model == 0:
             time_now = time.strftime('%y%m_%d%H%M')
             print('=time:{} step:{} saved!!'.format(time_now, total_step))
-            model_file_dir = os.path.join(arglist.save_dir, '{}_{}'.format(arglist.scenario_name, total_step))
+            model_file_dir = os.path.join(arglist.log_dir, 'save_models', '{}_{}'.format(arglist.scenario_name, total_step))
             if not os.path.exists(model_file_dir): # make the path
-                os.mkdir(model_file_dir)
+                os.makedirs(model_file_dir)
             for agent_idx, (a_c, a_t, c_c, c_t) in \
                 enumerate(zip(actors_cur, actors_tar, critics_cur, critics_tar)):
                 torch.save(a_c, os.path.join(model_file_dir, 'a_c_{}.pt'.format(agent_idx)))
@@ -299,4 +298,5 @@ def train(arglist):
 if __name__ == '__main__':
 
     arglist = parse_args()
+    logger(arglist)
     train(arglist)
