@@ -69,8 +69,7 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
     |output: the data for next update
     """
     # update all trainers, if not in display or benchmark mode
-    if total_step > arglist.learning_start_step and \
-        (total_step - arglist.learning_start_step) % arglist.learning_fre == 0:
+    if total_step % arglist.learning_fre == 0:
         if update_cnt == 0: print('\r=start training ...'+' '*100)
         # update the target par using the cur
         update_cnt += 1
@@ -233,7 +232,7 @@ def train(arglist):
 
             # interact with env
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
-            env.render()
+            # env.render()
 
             # save the experience
             memory.add(obs_n, np.concatenate(action_n), rew_n , new_obs_n, done_n)
@@ -273,7 +272,7 @@ def train(arglist):
                     new_obs_n, rew_n, done_n, info_n = env.step(action_n)
 
                     # rendering
-                    env.render()
+                    # env.render()
                     # arglist.video.record(env.render(mode='rgb_array'))
 
                     # save the experience
