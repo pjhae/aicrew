@@ -35,7 +35,7 @@ def parse_args():
     parser.add_argument("--writer", default=writer, help="tensorboard writer")
     parser.add_argument("--video", default=video, help="video")
     parser.add_argument("--device", default=device, help="torch device")
-    parser.add_argument("--learning_start_step", type=int, default=10000, help="learning start steps")
+    parser.add_argument("--learning_start_step", type=int, default=50000, help="learning start steps")
     parser.add_argument("--max_grad_norm", type=float, default=0.5, help="max gradient norm for clip")
     parser.add_argument("--learning_fre", type=int, default=100, help="learning frequency")
     parser.add_argument("--tau", type=int, default=0.01, help="how depth we exchange the params of the nn")
@@ -44,13 +44,11 @@ def parse_args():
     parser.add_argument("--gamma", type=float, default=0.97, help="discount factor")
     parser.add_argument("--batch_size", type=int, default=1256, help="number of episodes to optimize at the same time")
     parser.add_argument("--memory_size", type=int, default=1e6, help="number of data stored in the memory")
-    parser.add_argument("--num_units_1", type=int, default=128, help="number of units in the mlp")
-    parser.add_argument("--num_units_2", type=int, default=64, help="number of units in the mlp")
-    parser.add_argument("--num_units_openai", type=int, default=64, help="number of units in the mlp")
+    parser.add_argument("--num_units_openai", type=int, default=128, help="number of units in the mlp")
 
     # checkpointing
     parser.add_argument("--fre4save_model", type=int, default=100, help="the number of the episode for saving the model")
-    parser.add_argument("--start_save_model", type=int, default=400, help="the number of the episode for saving the model")
+    parser.add_argument("--start_save_model", type=int, default=100, help="the number of the episode for saving the model")
     parser.add_argument("--save_dir", type=str, default="saved_models", \
             help="directory in which training state and model should be saved")
     parser.add_argument("--old_model_name", type=str, default="saved_models/", \

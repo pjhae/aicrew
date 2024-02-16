@@ -107,8 +107,8 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
                 obs_n_o[:, obs_size[agent_idx][0]:obs_size[agent_idx][1]], model_original_out=True, eval=True) # There is no need to cal other agent's action
             # update the aciton of this agent
             action_cur_o[:, action_size[agent_idx][0]:action_size[agent_idx][1]] = policy_c_new 
-            # loss_pse = torch.mean(torch.pow(model_out, 2))
-            loss_pse = torch.mean((model_out ** 2 - 1) ** 2) # regularize to ensure the abs(output) is close to 1
+            loss_pse = torch.mean(torch.pow(model_out, 2))
+            # loss_pse = torch.mean((model_out ** 2 - 1) ** 2) # regularize to ensure the abs(output) is close to 1
             loss_a = torch.mul(-1, torch.mean(critic_c(obs_n_o, action_cur_o)))
             loss_a_tot = 1e-3*loss_pse+loss_a
 
@@ -152,8 +152,8 @@ def train(arglist):
     env_config = {
         "num_agents": 4,
         "obs_box_size": 50,
-        "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
-        # "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
+        # "init_pos": ((140., 140.), (160., 140.), (140., 160.), (160., 160.)),
+        "init_pos": ((55., 30.), (75., 30.), (95., 25.), (105., 30.)),
         # "init_pos": ((88, 69), (190, 120), (67, 220), (195, 220)),
         "dynamic_delta_t": 1.1
     }

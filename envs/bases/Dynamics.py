@@ -623,7 +623,7 @@ class Dynamics:
         self.yaw = self.yaw + self.yawrate * self.dt
         
         ##################### pjhae #####################
-        self.yawrate = np.clip(self.yawrate, -0.15, 0.15)
+        self.yawrate = np.clip(self.yawrate, -0.1, 0.1)
         # print(self.yawrate)
         # print("#")
         #################################################

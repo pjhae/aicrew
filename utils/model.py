@@ -73,7 +73,7 @@ class openai_actor(abstract_agent):
         policy = torch.tanh(model_out)*self.action_scale + self.action_bias
 
         # add gaussian noise if 'NOT' evaluation mode!
-        policy_noise = self.action_scale * torch.randn_like(policy, dtype=torch.float32)/20
+        policy_noise = self.action_scale * torch.randn_like(policy, dtype=torch.float32)/100
         if eval == False:
             policy += policy_noise
 
