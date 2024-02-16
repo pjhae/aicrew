@@ -7,8 +7,8 @@ Step 1: Download the project and cd to this project. Make sure that you have a '
 Step 2: Run the 'main.py' for training, and 'test.py' for test.    
 
 ### Checkpointing
-- saved_models: directory where model will be saved.
-- runs: directory where intermediate training results will be saved.
+- /saved_models: directory where model will be saved.
+- /runs: directory where intermediate training results will be saved.
 
 
 
