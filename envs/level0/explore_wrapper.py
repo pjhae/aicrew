@@ -36,10 +36,13 @@ class explore_wrapper(env_level0):
         # print(len(self.agents[0].list_detected_enemy))
         # print(self.agents[0].position)
         # Give large bonus if all enemies are detected
-        if len(self.agents[0].list_detected_enemy) == self.en:
-            detection_bonus = np.array([100, 100, 100 ,100])
-            print('All enemies DETECTED!!')
-        else:
+        
+        if len(self.agents[0].list_detected_enemy) >= 1: # TODO 좀 더 정교한 reward를 위해서는 '발견한 agent'에게 reward 줘야함 
+            detection_bonus = np.array([1, 1, 1 ,1])*len(self.agents[0].list_detected_enemy) # check 이렇게 주면, 한 명 발견하고 만족해서 더 explore 안할수도 있음. 그래서 1로 줌.
+            if len(self.agents[0].list_detected_enemy) == self.en:
+                detection_bonus = np.array([1000, 1000, 1000 ,1000])
+                print('All enemies DETECTED!!')
+        else :
             detection_bonus = np.array([0, 0, 0 ,0])
 
         rel_pos = obs[:, -8:] # get rel pos array
@@ -52,7 +55,7 @@ class explore_wrapper(env_level0):
         l2_norms_neg = -np.linalg.norm(rel_pos_assigned, axis=1)
 
         # toal reward
-        agent_reward = detection_bonus + 0.00001*l2_norms_neg # 0.01 -> 0.01 * 0.001. 이렇게 안 하면 리워드가 -1300 이렇게 나오더라. 02/18 DHO
+        agent_reward = detection_bonus + 0.0001*l2_norms_neg # 0.01 -> 0.01 * 0.001. 이렇게 안 하면 리워드가 -1300 이렇게 나오더라. 02/18 DHO -> 0.0001 pjhae
 
         return agent_reward
 
