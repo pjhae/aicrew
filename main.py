@@ -118,7 +118,9 @@ def agents_train(arglist, total_step, update_cnt, memory, obs_size, action_size,
             # add tensorboard
             arglist.writer.add_scalar('loss_agent{}/Actor_regularization'.format(agent_idx), loss_pse.item(), update_cnt)
             arglist.writer.add_scalar('loss_agent{}/Actor'.format(agent_idx), loss_a.item(), update_cnt)
+            arglist.writer.add_acalar(f'loss_agent{agent_idx}/Actor_weight', actor_c.linear_a1.weight.mean().item(), update_cnt)
             arglist.writer.add_scalar('loss_agent{}/Critic'.format(agent_idx), loss_c.item(), update_cnt)
+            arglist.writer.add_scalar(f'loss_agent{agent_idx}/Critic_weight', critic_c.linear_c1.weight.mean().item(), update_cnt)
 
 
         # save the model to the path_dir ---cnt by update number
@@ -238,6 +240,8 @@ def train(arglist):
             episode_reward += np.sum(rew_n)
             for i, rew in enumerate(rew_n): agent_rewards[i] += rew
 
+            arglist.writer.add_scalar('evaluation/rew_per_total_steps', np.sum(rew_n), total_step)
+            
             # train our agents 
             update_cnt, actors_cur, actors_tar, critics_cur, critics_tar = agents_train(\
                 arglist, total_step, update_cnt, memory, obs_size, action_size, \
@@ -250,8 +254,8 @@ def train(arglist):
             terminal = (episode_steps >= arglist.per_episode_max_len-1)
 
             if done or terminal:
+                arglist.writer.add_scalar('evaluation/episode_steps_per_episode', episode_steps, episode_idx)
                 break
-
 
         # Evaluation
         if episode_idx % 20 == 0 :
@@ -287,7 +291,7 @@ def train(arglist):
                         break
             
             # add tensorboard
-            arglist.writer.add_scalar('evaluation/reward', episode_reward/arglist.num_epi_eval, episode_idx)
+            arglist.writer.add_scalar('evaluation/reward_per_episode', episode_reward/arglist.num_epi_eval, episode_idx)
 
             # print
             print("episode : {}, reward : {}".format(episode_idx, episode_reward/arglist.num_epi_eval))
