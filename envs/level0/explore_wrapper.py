@@ -52,7 +52,7 @@ class explore_wrapper(env_level0):
         l2_norms_neg = -np.linalg.norm(rel_pos_assigned, axis=1)
 
         # toal reward
-        agent_reward = detection_bonus + 0.01*l2_norms_neg
+        agent_reward = detection_bonus + 0.00001*l2_norms_neg # 0.01 -> 0.01 * 0.001. 이렇게 안 하면 리워드가 -1300 이렇게 나오더라. 02/18 DHO
 
         return agent_reward
 

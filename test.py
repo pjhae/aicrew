@@ -1,14 +1,10 @@
-import os
-import sys
-
 import torch
-import torch.nn.functional as F
 from envs.level0.explore_wrapper import explore_wrapper
 from arguments import parse_args
 
 def get_trainers(env, arglist):
 
-    model_epi_number = 2849900
+    model_epi_number = 1999900
 
     """ load the model """
     actors_tar = [torch.load(arglist.old_model_name+'aicrew_{}/'.format(model_epi_number)+'a_c_{}.pt'.format(agent_idx), map_location=arglist.device) \
@@ -71,4 +67,5 @@ def test(arglist):
 if __name__ == '__main__':
 
     arglist = parse_args()
+    arglist.old_model_name = 'runs/2024-02-16_19-55-51_MADDPG_AI-crew/save_models/'
     test(arglist)
